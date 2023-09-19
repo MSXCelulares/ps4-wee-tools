@@ -334,7 +334,7 @@ def screenFileSelect(path = '', all = False):
 	elif choice == 'b':
 		screenBuild2BLS(path)
 	elif choice == 'c':
-		file_list = [os.path.join(path, x) for x in os.listdir(path) if not os.path.isdir(os.path.join(path, x)) and f.lower().endswith('.bin')]
+		file_list = [os.path.join(path, x) for x in os.listdir(path) if not os.path.isdir(os.path.join(path, x)) and x.lower().endswith('.bin')]
 		file_list.sort()
 		screenCompareFiles(file_list)
 	elif choice == 'm':
@@ -375,10 +375,21 @@ def screenCompareFiles(list):
 			c_md5 = md5 if not c_md5 else c_md5
 			if c_md5 != md5:
 				res = False
-			print((' [{}] {}').format(md5,  os.path.basename(file)))
+			print(UI.highlight('=>')+UI.cyan(os.path.basename(file)))
+			print(UI.highlight('  MD5 Hash ')+'['+md5+']')
+			print('   '+UI.highlight(STR_ENTROPY))
+			stats = Utils.entropy(file)
+			print('\r',end='')
+			info = {		
+                                '     Entropy': '{:.5f}'.format(stats['ent']),
+                                '     0xFF   ': '{:.2f}%'.format(stats['ff']*100),
+                                '     0x00   ': '{:.2f}%'.format(stats['00']*100),
+                                '     Other  ': '{:.2f}%'.format((1 - stats['ff'] - stats['00'])*100)+'\n',
+                        }
+			UI.showTable(info,10)
 	
 	print(UI.DIVIDER)
-	print(STR_COMPARE_RESULT.format((STR_FILES_MATCH if res else STR_FILES_MISMATCH), res))
+	print(STR_COMPARE_RESULT.format((UI.green(STR_FILES_MATCH) if res else UI.error(STR_FILES_MISMATCH)), res))
 	input(STR_BACK)
 	
 	screenFileSelect()
