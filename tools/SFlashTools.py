@@ -173,7 +173,7 @@ def screenFlagsToggler(file):
 			{'k':'BOOT_MODE',	'v':[b'\xFE',b'\xFB',b'\xFF'],	'd':['Development','Assist','Release']},
 			{'k':'MANU',		'v':[b'\x00'*32,b'\xFF'*32],	'd':[STR_OFF,STR_ON]},
 		]
-		
+
 		for i in range(len(patches)):
 			name = SFlash.getNorAreaName(patches[i]['k'])
 			val = SFlash.getNorData(f, patches[i]['k'])
@@ -220,6 +220,8 @@ def toggleFlag(file, patch):
 		SFlash.setNorData(f, patch['k'],  patch['v'][i])
 		if 'b' in patch:
 			SFlash.setNorDataB(f, patch['k'], patch['v'][i])
+
+		if patch['k'] == 'UART': SFlash.setNorData(f, 'UART2', patch['v'][i])
 	
 	UI.setStatus(STR_SET_TO.format(SFlash.getNorAreaName(patch['k']),patch['d'][i]))
 

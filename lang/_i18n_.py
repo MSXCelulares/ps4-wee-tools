@@ -4,7 +4,7 @@
 #==========================================================
 import sys, os
 
-APP_VERSION = '0.8.7'
+APP_VERSION = '0.8.7b'
 
 # Colors stuff
 
@@ -23,7 +23,7 @@ class Clr:
 	strike			='\033[09m'	if use_clr else ''
 	class fg:
 		black		='\033[30m'	if use_clr else ''
-		red			='\033[31m'	if use_clr else ''
+		red		='\033[31m'	if use_clr else ''
 		green		='\033[32m'	if use_clr else ''
 		orange		='\033[33m'	if use_clr else ''
 		blue		='\033[34m'	if use_clr else ''
@@ -39,7 +39,7 @@ class Clr:
 		l_cyan		='\033[96m'	if use_clr else ''
 	class bg:
 		black		='\033[40m'	if use_clr else ''
-		red			='\033[41m'	if use_clr else ''
+		red		='\033[41m'	if use_clr else ''
 		green		='\033[42m'	if use_clr else ''
 		orange		='\033[43m'	if use_clr else ''
 		blue		='\033[44m'	if use_clr else ''
@@ -136,7 +136,7 @@ STR_2023 = Clr.fg.red+'"20-23"'+Clr.reset
 from lang.en import *
 
 APP_NAME = ' PS4 ~WEE~ TOOLS v' + APP_VERSION
-TITLE = UI.DIVIDER_BOLD + APP_NAME+('by Andy_maN').rjust(UI.LINE_WIDTH-len(APP_NAME)-1)+'\n' + UI.DIVIDER_BOLD
+TITLE = UI.DIVIDER_BOLD + APP_NAME+('Dev. by Andy_maN - Mod. MSX Celulares').rjust(UI.LINE_WIDTH-len(APP_NAME)-1)+'\n' + UI.DIVIDER_BOLD
 
 # Fill strings
 
@@ -147,7 +147,7 @@ STR_MEMCLOCK_INPUT	= UI.DIVIDER + STR_MEMCLOCK_INPUT
 STR_SAMU_INPUT		= UI.DIVIDER + STR_SAMU_INPUT
 STR_CONFIRM			= UI.DIVIDER + STR_CONFIRM
 
-STR_APP_HELP		= STR_APP_HELP + UI.link('https://github.com/andy-man/ps4-wee-tools')
+STR_APP_HELP		= STR_APP_HELP + UI.link('https://github.com/MSXCelulares/ps4-wee-tools')
 STR_INFO_HDD_EAP	= STR_INFO_HDD_EAP + UI.link('https://www.psdevwiki.com/ps4/Mounting_HDD_in_Linux')
 STR_INFO_EMC_CFW	= STR_INFO_EMC_CFW + UI.link('https://www.psdevwiki.com/ps4/Southbridge')
 

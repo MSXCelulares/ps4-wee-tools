@@ -117,6 +117,7 @@ NOR_AREAS = {
 	'MEMTEST':	{'o':0x1C9310,	'l':1,			't':'b',	'n':'Memory test'},			# On(01), Off(00/FF)
 	'RNG_KEY':	{'o':0x1C9312,	'l':1,			't':'b',	'n':'RNG/Keystorage test'},	# On(01), Off(00/FF)
 	'UART':		{'o':0x1C931F,	'l':1,			't':'b',	'n':'UART'},				# On(01), Off(00)
+	'UART2':	{'o':0x1CC31F,	'l':1,			't':'b',	'n':'UART Flag2'},			# On(01), Off(00)
 	'MEMCLK':	{'o':0x1C9320,	'l':1,			't':'b',	'n':'GDDR5 Memory clock'},
 	
 	'BTNSWAP':	{'o':0x1CA040,	'l':1,			't':'b',	'n':'Buttons swap'},		# X(01), O(00/FF)
@@ -135,16 +136,16 @@ NOR_AREAS = {
 }
 
 SOUTHBRIDGES = {
-	'Aeolia A2':	[0x0D, 0x0E], #CXD90025
-	'Belize A0/B0':	[0x20, 0x21], #CXD90036
-	'Baikal B1':	[0x24, 0x25], #CXD90042
-	'Belize 2 A0':	[0x2A, 0x2B], #CXD90046
+	'CXD90025 - Aeolia A2'      :	[0x0D, 0x0E], #CXD90025
+	'CXD90036 - Belize A0/B0'   :	[0x20, 0x21], #CXD90036
+	'CXD90042 - Baikal B1'      :	[0x24, 0x25], #CXD90042
+	'CXD90046 - Belize 2 A0'    :	[0x2A, 0x2B], #CXD90046
 }
 
 TORUS_VERS = {
-	0x03: 'Version 1',
-	0x22: 'Version 2',
-	0x30: 'Version 3',
+	0x03: 'Torus 1', #Version 1
+	0x22: 'Torus 2', #Version 2
+	0x30: 'Trooper', #version 3
 }
 
 MAGICS = {
@@ -410,14 +411,35 @@ def getSFlashInfo(file = '-'):
 		region = getConsoleRegion(f)
 		board = getNorData(f, 'BOARD_ID')
 		
+#               mb_codes = 0x1c4000
 		mb_codes = {
-			b'\x03\02': 'SA',
-			b'\x04\x01': 'HA',
-			b'\x05\x02': 'NV',
+			b'\x02':'CV',
+                        b'\x03':'SA',
+                        b'\x04':'HA',
+                        b'\x05':'NV',
 		}
+
+#		mb_type = 0x1c4001
+		mb_type = {
+                    b'\x01':'Non-Retail',
+                    b'\x02':'Retail',
+                }
+
+		mb_prefix = (mb_codes[board[0:1]] if board[0:1] in mb_codes else '??')
+
+#               mb_sufix = 0x1c4002
+		mb_sufix = '?'
+		if mb_prefix == 'CV' and board[2] == 1: mb_sufix = 'N'
+		if mb_prefix == 'SA': mb_sufix = chr(ord('A')-1+board[2])
+		if mb_prefix == 'HA' and board[2] == 1: mb_sufix = 'C'
+		if mb_prefix == 'NV' and board[2] <= 2: mb_sufix = chr(ord('A')-1+board[2])
+		if mb_prefix == 'NV' and board[2] == 3: mb_sufix = 'G'
+
+#               mb_rev = Revision of board - ??? Incognite???
+		mb_rev = '00?'
 		
-		mobo = (mb_codes[board[0:2]] if board[0:2] in mb_codes else '??') + chr(ord('A')-1+board[2])
-		
+		mobo = (mb_type[board[1:2]] + ' - ' + mb_prefix + mb_sufix + '-' + mb_rev)
+
 		try:
 			hdd = (' / ').join(Utils.swapBytes(getNorData(f, 'HDD')).decode('utf-8').split())
 		except:
@@ -426,11 +448,11 @@ def getSFlashInfo(file = '-'):
 		info = {
 			'FILE'			: os.path.basename(file),
 			'MD5'			: Utils.getFileMD5(file),
-			'SKU / Board ID': sku + ' [' + UI.highlight(Utils.hex(board, ':')) + '] ~' + mobo + '-00?',
+			'SKU / Board ID': sku + ' - ' + mobo + ' [' + UI.highlight(Utils.hex(board, ':')) + ']',
 			'Region'		: '[{}] {}'.format(region[0], region[1]),
 			'SN / Mobo SN'	: getNorData(f, 'SN').decode('utf-8','ignore')+' / '+getNorData(f, 'MB_SN').decode('utf-8','ignore'),
 			'Southbridge'	: southbridge if southbridge else STR_UNKNOWN,
-			'Torus (WiFi)'	: torus if len(torus) else STR_UNKNOWN,
+			'Bluetooth / WiFi'	: UI.cyan(torus) if len(torus) else UI.error(STR_UNKNOWN),
 			'MAC'			: Utils.hex(getNorData(f, 'MAC'),':'),
 			'HDD'			: hdd,
 			'FW (active)'	: fw['c'] + ' ['+active_slot.upper()+']' + (' [min '+fw['min']+']' if fw['min'] else ''),

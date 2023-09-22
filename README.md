@@ -61,6 +61,7 @@ Don't use if you don't understant what is it for!
 
 ## Credits
 
+* Developer by Andy_maN - All rights reserved.
 * fail0verflow
 * zecoxao
 * Al-Azif
@@ -82,6 +83,13 @@ And of course [PSDevWiki](https://www.psdevwiki.com/ps4/)
 * [Twitter](https://twitter.com/AndyManDev)
 
 ## Changelog
+
+### v0.8.7b
+* Add names of SouthBridges
+* Add names of BT/WIFI Torus1, Torus2 and Trooper
+* Add color in BT/WIFI Version for best eye of user in case of FW corrupted
+* Fix names of board with Prefix+Sufix, revision is a incognite
+* Add UART Flag2 in 0x1CC31F
 
 ### v0.8.6
 * EMC cmd mode
